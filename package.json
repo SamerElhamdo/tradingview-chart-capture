@@ -1,7 +1,7 @@
 {
   "name": "tradingview-chart-capture",
   "version": "1.0.0",
-  "description": "Apify Actor for capturing TradingView charts with custom indicators",
+  "description": "Apify Actor for capturing TradingView charts with custom indicators and settings as PNG screenshots",
   "type": "module",
   "main": "main.js",
   "scripts": {
@@ -10,17 +10,25 @@
   },
   "keywords": [
     "apify",
+    "apify-actor",
     "tradingview",
     "chart",
     "screenshot",
     "trading",
-    "indicators"
+    "indicators",
+    "playwright",
+    "crypto",
+    "stock",
+    "technical-analysis"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "apify": "^3.0.0",
     "playwright": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
 

@@ -1,11 +1,13 @@
 # Dependencies
 node_modules/
-package-lock.json
 yarn.lock
 
-# Apify
+# Apify local storage
 apify_storage/
-.actor/
+
+# Apify local test input (keep dataset_schema.json in Git)
+.actor/input.json
+.actor/INPUT.json
 
 # Environment variables
 .env

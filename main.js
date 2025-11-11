@@ -44,8 +44,8 @@ try {
     const page = await context.newPage();
 
     try {
-        // Navigate to TradingView chart
-        const chartUrl = `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(symbol)}`;
+        // Navigate to TradingView chart with interval in URL
+        const chartUrl = `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(interval)}`;
         Actor.log.info(`Navigating to: ${chartUrl}`);
         
         await page.goto(chartUrl, {
@@ -98,7 +98,7 @@ try {
             }
         }
 
-        // Change theme if needed
+        // Change theme if needed (using URL parameter or keyboard shortcut)
         if (theme === 'light') {
             Actor.log.info('Switching to light theme...');
             try {
@@ -110,31 +110,8 @@ try {
             }
         }
 
-        // Change timeframe/interval
-        Actor.log.info(`Setting timeframe to: ${interval}`);
-        try {
-            // TradingView uses keyboard shortcuts for timeframes
-            // Press the interval key (e.g., '1' for 1m, 'h' for 1h, 'D' for 1D)
-            const intervalKey = interval.toLowerCase().replace(/\d+/, '');
-            const intervalNumber = interval.match(/\d+/)?.[0] || '';
-            
-            // For intervals like "1h", we need to press the number then the letter
-            if (intervalNumber) {
-                for (const digit of intervalNumber) {
-                    await page.keyboard.press(digit);
-                    await page.waitForTimeout(200);
-                }
-            }
-            if (intervalKey) {
-                await page.keyboard.press(intervalKey);
-                await page.waitForTimeout(1000);
-            }
-        } catch (error) {
-            Actor.log.warning('Timeframe change may have failed', { error: error.message });
-        }
-
-        // Wait for chart to update
-        await page.waitForTimeout(2000);
+        // Wait for chart to fully load with the specified interval
+        await page.waitForTimeout(3000);
 
         // Add indicators
         Actor.log.info(`Adding ${indicators.length} indicator(s)...`);
@@ -142,26 +119,41 @@ try {
             try {
                 Actor.log.info(`Adding indicator: ${indicator}`);
                 
-                // Open indicator search: Shift + I
+                // Wait a bit before adding next indicator
+                await page.waitForTimeout(500);
+                
+                // Open indicator search dialog: Shift + I
                 await page.keyboard.press('Shift+I');
-                await page.waitForTimeout(1000);
-
-                // Type indicator name
-                await page.keyboard.type(indicator, { delay: 100 });
                 await page.waitForTimeout(1500);
+
+                // Wait for indicator search input to be visible and focused
+                await page.waitForTimeout(500);
+                
+                // Clear any existing text and type indicator name
+                await page.keyboard.press('Control+a');
+                await page.waitForTimeout(200);
+                await page.keyboard.type(indicator, { delay: 80 });
+                await page.waitForTimeout(2000); // Wait for search results to load
 
                 // Press Enter to select first result
                 await page.keyboard.press('Enter');
-                await page.waitForTimeout(2000);
+                await page.waitForTimeout(2500); // Wait for indicator to be added and rendered
 
                 Actor.log.info(`Indicator "${indicator}" added successfully`);
             } catch (error) {
                 Actor.log.warning(`Failed to add indicator: ${indicator}`, { error: error.message });
+                // Try to close any open dialogs
+                try {
+                    await page.keyboard.press('Escape');
+                    await page.waitForTimeout(500);
+                } catch (e) {
+                    // Ignore escape errors
+                }
             }
         }
 
-        // Wait for all indicators to render
-        await page.waitForTimeout(3000);
+        // Wait for all indicators to fully render
+        await page.waitForTimeout(4000);
 
         // Hide UI elements if requested
         if (hideUi) {

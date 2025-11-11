@@ -1,0 +1,56 @@
+{
+  "title": "TradingView Chart Capture Dataset",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "symbol": {
+      "title": "Symbol",
+      "type": "string"
+    },
+    "interval": {
+      "title": "Interval",
+      "type": "string"
+    },
+    "indicators": {
+      "title": "Indicators",
+      "type": "array"
+    },
+    "theme": {
+      "title": "Theme",
+      "type": "string"
+    },
+    "width": {
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "title": "Height",
+      "type": "integer"
+    },
+    "screenshotBase64": {
+      "title": "Screenshot Base64",
+      "type": "string",
+      "description": "Screenshot image encoded as base64 string"
+    },
+    "screenshotDataUrl": {
+      "title": "Screenshot Data URL",
+      "type": "string",
+      "description": "Screenshot as data URL (data:image/png;base64,...)"
+    },
+    "screenshotUrl": {
+      "title": "Screenshot URL",
+      "type": "string",
+      "description": "Public URL to screenshot in Key-Value store"
+    },
+    "screenshotKey": {
+      "title": "Screenshot Key",
+      "type": "string",
+      "description": "Key used to store screenshot in Key-Value store"
+    },
+    "timestamp": {
+      "title": "Timestamp",
+      "type": "string"
+    }
+  }
+}
+

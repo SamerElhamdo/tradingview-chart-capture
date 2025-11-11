@@ -2,7 +2,7 @@
   "actorSpecification": 1,
   "name": "tradingview-chart-capture",
   "version": "1.0.0",
-  "description": "Captures TradingView charts with custom indicators and settings as PNG screenshots",
+  "description": "Captures TradingView charts with custom indicators and settings as PNG screenshots. Returns base64 encoded images and metadata in dataset.",
   "input": "./INPUT_SCHEMA.json",
   "dockerfile": "./Dockerfile",
   "readme": "./README.md",

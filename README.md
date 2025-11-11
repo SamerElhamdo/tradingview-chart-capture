@@ -25,26 +25,42 @@ An Apify Actor that captures TradingView charts with custom indicators and setti
 
 ```bash
 npm install
+npx playwright install chromium
 ```
 
-### 2. Run Locally
+### 2. Run Locally with Apify SDK
 
-You can run the actor locally using Apify CLI:
+The actor uses Apify SDK which works automatically in local environment:
 
+**Option A: Using Apify CLI (Recommended)**
 ```bash
 # Install Apify CLI globally (if not already installed)
 npm install -g apify-cli
 
-# Run the actor with default input
+# Run the actor (Apify CLI automatically reads .actor/INPUT.json)
 npx apify run
 
-# Or run with custom input
-npx apify run --input input.json
+# Or specify custom input file
+npx apify run --input .actor/INPUT.json
 ```
 
-### 3. Test Input Example
+**Option B: Direct Node.js execution**
+```bash
+# Apify SDK automatically reads .actor/INPUT.json if it exists
+node main.js
+# or
+npm start
+```
 
-Create an `input.json` file in the project root:
+### 3. Local Storage
+
+When running locally, Apify SDK automatically creates:
+- `apify_storage/key_value_stores/default/` - Screenshots stored here
+- `apify_storage/datasets/default/` - Dataset JSON files stored here
+
+### 4. Test Input Example
+
+For local testing, create `.actor/INPUT.json` file:
 
 ```json
 {
@@ -58,10 +74,10 @@ Create an `input.json` file in the project root:
 }
 ```
 
-Then run:
-```bash
-npx apify run --input input.json
-```
+**Note:** 
+- Apify SDK works automatically in local mode - no API token required for local testing
+- `.actor/INPUT.json` is ignored by Git (see `.gitignore`)
+- On Apify platform, input is provided via Actor input in the console
 
 ## Input Schema
 
@@ -171,16 +187,22 @@ The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) 
 
 ```
 tradingview-chart-capture/
-├── main.js              # Main actor logic
-├── package.json         # Node.js dependencies
-├── apify.json          # Apify actor configuration
-├── INPUT_SCHEMA.json   # Input schema definition
-├── Dockerfile          # Docker image for Apify
-├── .gitignore         # Git ignore rules
-├── README.md          # This file
-└── .github/
-    └── workflows/
-        └── deploy.yml  # GitHub Actions CI/CD
+├── main.js                  # Main actor logic
+├── package.json             # Node.js dependencies and scripts
+├── apify.json              # Apify actor configuration
+├── INPUT_SCHEMA.json       # Input schema definition
+├── Dockerfile              # Docker image for Apify platform
+├── .gitignore             # Git ignore rules
+├── README.md              # Project documentation
+├── .actor/                # Apify actor files (not in Git)
+│   ├── dataset_schema.json # Dataset output schema
+│   └── INPUT.json         # Local test input (gitignored)
+├── .github/               # GitHub configuration
+│   └── workflows/
+│       └── deploy.yml     # GitHub Actions CI/CD
+└── apify_storage/         # Local storage (gitignored)
+    ├── datasets/          # Local dataset storage
+    └── key_value_stores/  # Local key-value storage
 ```
 
 ## How It Works
