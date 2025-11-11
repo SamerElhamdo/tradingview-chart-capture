@@ -17,7 +17,8 @@ try {
         width = 1280,
         height = 720,
         hideUi = true,
-        login = null,
+        loginUsername = null,
+        loginPassword = null,
         outputFileName = null,
     } = input;
 
@@ -57,7 +58,7 @@ try {
         Actor.log.info('Chart loaded successfully');
 
         // Optional: Login if credentials provided
-        if (login && login.username && login.password) {
+        if (loginUsername && loginPassword) {
             Actor.log.info('Attempting to login...');
             try {
                 // Look for sign in button/link
@@ -68,11 +69,11 @@ try {
 
                     // Fill login form
                     const usernameInput = await page.waitForSelector('input[type="text"], input[type="email"]', { timeout: 5000 });
-                    await usernameInput.fill(login.username);
+                    await usernameInput.fill(loginUsername);
                     await page.waitForTimeout(500);
 
                     const passwordInput = await page.waitForSelector('input[type="password"]', { timeout: 5000 });
-                    await passwordInput.fill(login.password);
+                    await passwordInput.fill(loginPassword);
                     await page.waitForTimeout(500);
 
                     // Submit form

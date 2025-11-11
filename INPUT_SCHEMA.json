@@ -59,22 +59,19 @@
       "default": true,
       "editor": "checkbox"
     },
-    "login": {
-      "title": "Login Credentials",
-      "type": "object",
-      "description": "Optional TradingView login credentials (JSON object with username and password)",
-      "properties": {
-        "username": {
-          "title": "Username",
-          "type": "string",
-          "description": "TradingView username or email"
-        },
-        "password": {
-          "title": "Password",
-          "type": "string",
-          "description": "TradingView password"
-        }
-      }
+    "loginUsername": {
+      "title": "Login Username",
+      "type": "string",
+      "description": "Optional TradingView username or email for login",
+      "default": null,
+      "editor": "textfield"
+    },
+    "loginPassword": {
+      "title": "Login Password",
+      "type": "string",
+      "description": "Optional TradingView password for login",
+      "default": null,
+      "editor": "textfield"
     },
     "outputFileName": {
       "title": "Output File Name",

@@ -74,7 +74,8 @@ npx apify run --input input.json
 | `width` | integer | `1280` | Screenshot width in pixels (800-3840) |
 | `height` | integer | `720` | Screenshot height in pixels (600-2160) |
 | `hideUi` | boolean | `true` | Hide toolbars and watermarks |
-| `login` | object | `null` | Optional: `{ "username": "...", "password": "..." }` |
+| `loginUsername` | string | `null` | Optional: TradingView username or email for login |
+| `loginPassword` | string | `null` | Optional: TradingView password for login |
 | `outputFileName` | string | `null` | Custom filename (auto-generated if not provided) |
 
 ## Output
