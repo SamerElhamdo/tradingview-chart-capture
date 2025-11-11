@@ -49,12 +49,21 @@ try {
         Actor.log.info(`Navigating to: ${chartUrl}`);
         
         await page.goto(chartUrl, {
-            waitUntil: 'networkidle',
+            waitUntil: 'domcontentloaded',
             timeout: 60000,
         });
 
-        // Wait for chart to load
-        await page.waitForSelector('[data-name="legend-source-item"]', { timeout: 30000 });
+        // Wait for chart to load - try multiple selectors
+        Actor.log.info('Waiting for chart to load...');
+        try {
+            await page.waitForSelector('canvas', { timeout: 30000 });
+            Actor.log.info('Chart canvas found');
+        } catch (error) {
+            Actor.log.warning('Canvas not found, trying alternative selector...');
+        }
+
+        // Wait a bit more for chart to fully render
+        await page.waitForTimeout(5000);
         Actor.log.info('Chart loaded successfully');
 
         // Optional: Login if credentials provided
@@ -200,18 +209,45 @@ try {
         const fileName = outputFileName || `chart_${safeSymbol}_${timestamp}`;
         const screenshotPath = `${fileName}.png`;
 
-        const screenshot = await page.screenshot({
-            type: 'png',
-            fullPage: false,
-        });
+        let screenshot;
+        try {
+            screenshot = await page.screenshot({
+                type: 'png',
+                fullPage: false,
+            });
+            Actor.log.info(`Screenshot captured, size: ${screenshot.length} bytes`);
+        } catch (error) {
+            Actor.log.exception(error, 'Failed to capture screenshot');
+            throw error;
+        }
 
         // Convert screenshot to base64
         const screenshotBase64 = screenshot.toString('base64');
         const screenshotDataUrl = `data:image/png;base64,${screenshotBase64}`;
+        Actor.log.info(`Base64 conversion complete, length: ${screenshotBase64.length} characters`);
+        
+        // Check if base64 is too large (Apify Dataset has limits)
+        const MAX_BASE64_SIZE = 9000000; // ~9MB limit for Dataset records
+        if (screenshotBase64.length > MAX_BASE64_SIZE) {
+            Actor.log.warning(`Base64 size (${screenshotBase64.length}) exceeds recommended limit. Consider reducing image quality.`);
+        }
 
-        // Save to Apify Key-Value store (optional, for backup/access via URL)
-        await Actor.setValue(screenshotPath, screenshot, { contentType: 'image/png' });
-        Actor.log.info(`Screenshot saved: ${screenshotPath}`);
+        // Save to Apify Key-Value store
+        try {
+            await Actor.setValue(screenshotPath, screenshot, { contentType: 'image/png' });
+            Actor.log.info(`Screenshot saved to Key-Value store: ${screenshotPath}`);
+        } catch (error) {
+            Actor.log.warning('Failed to save screenshot to Key-Value store', { error: error.message });
+        }
+
+        // Get public URL
+        let screenshotUrl = '';
+        try {
+            screenshotUrl = await Actor.getPublicUrl(screenshotPath);
+            Actor.log.info(`Public URL: ${screenshotUrl}`);
+        } catch (error) {
+            Actor.log.warning('Failed to get public URL', { error: error.message });
+        }
 
         // Push metadata to dataset with base64 image
         const result = {
@@ -223,13 +259,34 @@ try {
             height,
             screenshotBase64: screenshotBase64,
             screenshotDataUrl: screenshotDataUrl,
-            screenshotUrl: await Actor.getPublicUrl(screenshotPath),
+            screenshotUrl: screenshotUrl,
             screenshotKey: screenshotPath,
             timestamp: new Date().toISOString(),
         };
 
-        await Actor.pushData(result);
-        Actor.log.info('Metadata pushed to dataset with base64 image');
+        try {
+            await Actor.pushData(result);
+            Actor.log.info('✅ Metadata pushed to dataset successfully', {
+                symbol,
+                screenshotSize: screenshot.length,
+                base64Length: screenshotBase64.length,
+            });
+        } catch (error) {
+            Actor.log.exception(error, 'Failed to push data to dataset');
+            // Try to push without base64 if it's too large
+            try {
+                const resultWithoutBase64 = {
+                    ...result,
+                    screenshotBase64: `[Base64 data too large: ${screenshotBase64.length} chars]`,
+                    screenshotDataUrl: `[Data URL too large: ${screenshotDataUrl.length} chars]`,
+                };
+                await Actor.pushData(resultWithoutBase64);
+                Actor.log.info('Pushed data without base64 (too large)');
+            } catch (error2) {
+                Actor.log.exception(error2, 'Failed to push data even without base64');
+                throw error2;
+            }
+        }
 
     } finally {
         await browser.close();
