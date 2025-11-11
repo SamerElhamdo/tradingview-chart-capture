@@ -1,0 +1,13 @@
+{
+  "actorSpecification": 1,
+  "name": "tradingview-chart-capture",
+  "version": "1.0.0",
+  "description": "Captures TradingView charts with custom indicators and settings as PNG screenshots",
+  "input": "./INPUT_SCHEMA.json",
+  "dockerfile": "./Dockerfile",
+  "readme": "./README.md",
+  "storages": {
+    "dataset": "./.actor/dataset_schema.json"
+  }
+}
+

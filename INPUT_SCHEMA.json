@@ -1,0 +1,92 @@
+{
+  "title": "TradingView Chart Capture Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "symbol": {
+      "title": "Trading Symbol",
+      "type": "string",
+      "description": "TradingView symbol (e.g., BINANCE:BTCUSDT, NASDAQ:AAPL)",
+      "default": "BINANCE:BTCUSDT",
+      "editor": "textfield"
+    },
+    "interval": {
+      "title": "Timeframe",
+      "type": "string",
+      "description": "Chart interval (e.g., 1m, 5m, 15m, 1h, 4h, 1D)",
+      "default": "1h",
+      "editor": "textfield"
+    },
+    "indicators": {
+      "title": "Indicators",
+      "type": "array",
+      "description": "List of indicators to add to the chart",
+      "default": ["RSI", "EMA 20", "EMA 50"],
+      "editor": "stringList",
+      "prefill": ["RSI", "EMA 20", "EMA 50"]
+    },
+    "theme": {
+      "title": "Theme",
+      "type": "string",
+      "description": "Chart theme",
+      "default": "dark",
+      "enum": ["dark", "light"],
+      "enumTitles": ["Dark", "Light"],
+      "editor": "select"
+    },
+    "width": {
+      "title": "Screenshot Width",
+      "type": "integer",
+      "description": "Screenshot width in pixels",
+      "default": 1280,
+      "minimum": 800,
+      "maximum": 3840,
+      "editor": "number"
+    },
+    "height": {
+      "title": "Screenshot Height",
+      "type": "integer",
+      "description": "Screenshot height in pixels",
+      "default": 720,
+      "minimum": 600,
+      "maximum": 2160,
+      "editor": "number"
+    },
+    "hideUi": {
+      "title": "Hide UI Elements",
+      "type": "boolean",
+      "description": "Hide toolbars, watermarks, and other UI elements before screenshot",
+      "default": true,
+      "editor": "checkbox"
+    },
+    "login": {
+      "title": "Login Credentials",
+      "type": "object",
+      "description": "Optional TradingView login credentials",
+      "properties": {
+        "username": {
+          "title": "Username",
+          "type": "string",
+          "description": "TradingView username or email",
+          "editor": "textfield"
+        },
+        "password": {
+          "title": "Password",
+          "type": "string",
+          "description": "TradingView password",
+          "editor": "textfield"
+        }
+      },
+      "editor": "object"
+    },
+    "outputFileName": {
+      "title": "Output File Name",
+      "type": "string",
+      "description": "Custom output filename (without extension). If not provided, will use chart_SYMBOL_TIMESTAMP format",
+      "default": null,
+      "editor": "textfield"
+    }
+  },
+  "required": []
+}
+
