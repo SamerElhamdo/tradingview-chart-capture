@@ -63,21 +63,18 @@
       "title": "Login Username",
       "type": "string",
       "description": "Optional TradingView username or email for login",
-      "default": null,
       "editor": "textfield"
     },
     "loginPassword": {
       "title": "Login Password",
       "type": "string",
       "description": "Optional TradingView password for login",
-      "default": null,
       "editor": "textfield"
     },
     "outputFileName": {
       "title": "Output File Name",
       "type": "string",
       "description": "Custom output filename (without extension). If not provided, will use chart_SYMBOL_TIMESTAMP format",
-      "default": null,
       "editor": "textfield"
     }
   },
