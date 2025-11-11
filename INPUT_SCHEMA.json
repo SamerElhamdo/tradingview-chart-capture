@@ -62,22 +62,19 @@
     "login": {
       "title": "Login Credentials",
       "type": "object",
-      "description": "Optional TradingView login credentials",
+      "description": "Optional TradingView login credentials (JSON object with username and password)",
       "properties": {
         "username": {
           "title": "Username",
           "type": "string",
-          "description": "TradingView username or email",
-          "editor": "textfield"
+          "description": "TradingView username or email"
         },
         "password": {
           "title": "Password",
           "type": "string",
-          "description": "TradingView password",
-          "editor": "textfield"
+          "description": "TradingView password"
         }
-      },
-      "editor": "object"
+      }
     },
     "outputFileName": {
       "title": "Output File Name",
